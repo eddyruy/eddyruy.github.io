@@ -48,7 +48,16 @@
         window.envia=function(){
             const nombre = document.getElementById("nombre").value;
             const email = document.getElementById("email").value;
-            console.log(nombre,email);
+            const password = document.getElementById("password").value;
+            console.log(nombre,email, password);
+            push(
+                ref(database, 3),
+                {
+                    name: nombre,
+                    email: email,
+                    password: password
+                }
+            );
         };
 
       </script>
