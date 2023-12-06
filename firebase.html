@@ -93,7 +93,6 @@
         // Función para cerrar el cuadro de diálogo
         window.cerrarDialogo = function () {
             document.getElementById('dialog-overlay').style.display = 'none';
-            editItemId = null;
         }
 
         // Función para guardar el registro en Firebase
@@ -101,45 +100,22 @@
             const nombre = document.getElementById("nombre-dialog").value;
             const edad = document.getElementById("edad-dialog").value;
 
-            if (editItemId) {
-                // Modo de edición, actualiza el registro existente
-                update(ref(database, `septimo/${editItemId}`), {
+            push(
+                ref(database, 'septimo'),
+                {
                     name: nombre,
                     age: edad
-                });
-            } else {
-                // Nuevo registro, añade uno nuevo
-                push(
-                    ref(database, 'septimo'),
-                    {
-                        name: nombre,
-                        age: edad
-                    }
-                );
-            }
+                }
+            );
 
             // Cierra el cuadro de diálogo después de guardar
             cerrarDialogo();
-        }
-        window.editarRegistro = function (itemId, itemName, itemAge) {
-            editItemId = itemId; // Almacena el ID del elemento en edición
-            document.getElementById("nombre-dialog").value = itemName;
-            document.getElementById("edad-dialog").value = itemAge;
-            abrirDialogo();
         }
         function mostrarDatosEnTabla(snapshot) {
             tableBody.innerHTML = '';
             snapshot.forEach((childSnapshot) => {
                 const data = childSnapshot.val();
-                const row = `
-                    <tr>
-                        <td>${data.name}</td>
-                        <td>${data.age}</td>
-                        <td class="button-column">
-                            <button onclick="editarRegistro('${childSnapshot.key}', '${data.name}', '${data.age}')">Editar</button>
-                            <button onclick="borrarRegistro('${childSnapshot.key}')">Borrar</button>
-                        </td>
-                    </tr>`;
+                const row = `<tr><td>${data.name}</td><td>${data.age}</td></tr>`;
                 tableBody.innerHTML += row;
             });
         }
