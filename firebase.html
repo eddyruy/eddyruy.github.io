@@ -112,6 +112,7 @@
             cerrarDialogo();
         }
         function mostrarDatosEnTabla(snapshot) {
+            tableBody.innerHTML = '';
             snapshot.forEach((childSnapshot) => {
                 const data = childSnapshot.val();
                 const row = `<tr><td>${data.name}</td><td>${data.age}</td></tr>`;
