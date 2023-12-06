@@ -39,11 +39,6 @@
         #data-table th {
             background-color: #f2f2f2;
         }
-        .edit-btn, .delete-btn {
-            cursor: pointer;
-            padding: 5px;
-            margin-right: 5px;
-        }
     </style>
 </head>
 <body>
@@ -67,7 +62,6 @@
             <tr>
                 <th>Nombre</th>
                 <th>Edad</th>
-                <th>Acciones</th>
             </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -75,7 +69,7 @@
     <script type="module">
         // Importa las funciones necesarias de Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCetjGQE4D1bI6s9_Jx_XAjvvVBrb6Sj0M",
@@ -90,7 +84,7 @@
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const tableBody = document.getElementById('table-body');
-        
+        let datosActuales = [];
         // Función para abrir el cuadro de diálogo
         window.abrirDialogo = function () {
             document.getElementById('dialog-overlay').style.display = 'flex';
@@ -116,32 +110,14 @@
 
             // Cierra el cuadro de diálogo después de guardar
             cerrarDialogo();
-            document.getElementById("nombre-dialog").value = "";
-            document.getElementById("edad-dialog").value = "";
         }
         function mostrarDatosEnTabla(snapshot) {
             tableBody.innerHTML = '';
             snapshot.forEach((childSnapshot) => {
                 const data = childSnapshot.val();
-                const key = childSnapshot.key;
-                const row = `<tr>
-                                <td>${data.name}</td>
-                                <td>${data.age}</td>
-                                <td>
-                                    <span class="edit-btn" onclick="editarRegistro('${key}', '${data.name}', '${data.age}')">&#9998; Editar</span>
-                                    <span class="delete-btn" onclick="eliminarRegistro('${key}')">&#10006; Eliminar</span>
-                                </td>
-                            </tr>`;
+                const row = `<tr><td>${data.name}</td><td>${data.age}</td></tr>`;
                 tableBody.innerHTML += row;
             });
-        }
-        
-        window.eliminarRegistro = function (key) {
-            // Implementa la lógica para eliminar un registro usando la clave (key)
-            // Puedes mostrar un mensaje de confirmación antes de eliminar
-            if (confirm('¿Estás seguro de que quieres eliminar este registro?')) {
-                remove(ref(database, `septimo/${key}`));
-            }
         }
         onValue(ref(database, 'septimo'), mostrarDatosEnTabla);
     </script>
