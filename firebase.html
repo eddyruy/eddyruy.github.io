@@ -133,39 +133,7 @@
                 tableBody.innerHTML += row;
             });
         }
-        window.editarRegistro = function (key, nombre, edad) {
-            // Puedes cargar los datos en el cuadro de diálogo para editar
-            document.getElementById("nombre-dialog").value = nombre;
-            document.getElementById("edad-dialog").value = edad;
-
-            // Cambia el botón de guardar para que llame a la función de actualización
-            const guardarBtn = document.querySelector("#dialog-box button");
-            guardarBtn.innerHTML = "Actualizar";
-            guardarBtn.onclick = function () {
-                actualizarRegistro(key);
-            };
-
-            abrirDialogo();
-        }
-        window.actualizarRegistro = function (key) {
-            // Obtiene los nuevos valores desde el cuadro de diálogo
-            const nuevoNombre = document.getElementById("nombre-dialog").value;
-            const nuevaEdad = document.getElementById("edad-dialog").value;
-
-            // Actualiza los datos en la base de datos
-            update(ref(database, `septimo/${key}`), {
-                name: nuevoNombre,
-                age: nuevaEdad
-            });
-
-            // Reinicia el cuadro de diálogo y vuelve a la función de guardar original
-            cerrarDialogo();
-            const guardarBtn = document.querySelector("#dialog-box button");
-            guardarBtn.innerHTML = "Guardar";
-            guardarBtn.onclick = function () {
-                guardarRegistro();
-            };
-        }
+        
         window.eliminarRegistro = function (key) {
             // Implementa la lógica para eliminar un registro usando la clave (key)
             // Puedes mostrar un mensaje de confirmación antes de eliminar
