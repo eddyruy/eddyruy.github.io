@@ -1,157 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+    <head>
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    </head>
+    <body>
+        <form id="crud-form">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id = "nombre">
+            <label for="edad">Edad:</label>
+            <input type="number" id = "edad">
+            <button type="button" onclick="crearRegistro()">Crear</button>
+        </form>
+        
+        <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+            import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+            // TODO: Add SDKs for Firebase products that you want to use
+            // https://firebase.google.com/docs/web/setup#available-libraries
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+            // Your web app's Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyCetjGQE4D1bI6s9_Jx_XAjvvVBrb6Sj0M",
+                authDomain: "proyecto1-8cb8a.firebaseapp.com",
+                databaseURL: "https://proyecto1-8cb8a-default-rtdb.firebaseio.com",
+                projectId: "proyecto1-8cb8a",
+                storageBucket: "proyecto1-8cb8a.appspot.com",
+                messagingSenderId: "126838121015",
+                appId: "1:126838121015:web:ec14f228576ede7c88d5b2"
+            };
+          
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const database = getDatabase(app);
 
-    <title>Hello, world!</title>
-    <style>
-        .jumbotron {
-            padding: 1rem 1rem;
-            margin-bottom: 0rem;
-            background-color: #e9ecef;
-            border-radius: .3rem;
-        }
-    </style>
-</head>
+            window.crearRegistro = function () {
+                const nombre = document.getElementById("nombre").value;
+                const edad = document.getElementById("edad").value;
+                console.log(nombre, edad);
+                
+                push(
+                    ref(database, 'septimo'),
+                    {
+                        name: nombre,
+                        age: edad 
+                    }
+                );
 
-<body>
-
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1 class="display-8">CRUD</h1>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <button id="btnNuevo" class="btn btn-primary" data-toggle="tooltip" title="Nuevo Producto"><svg
-                        class="bi bi-plus-circle-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4a.5.5 0 0 0-1 0v3.5H4a.5.5 0 0 0 0 1h3.5V12a.5.5 0 0 0 1 0V8.5H12a.5.5 0 0 0 0-1H8.5V4z" />
-                    </svg></button>
-                <!-- Modal -->
-                <div id="modalAltaEdicion" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary text-light">
-                                <h5 class="modal-title" id="exampleModalLabel">Listar</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                        aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <form id="formulario">
-                                <div class="modal-body">
-                                    <input id="id" type="hidden">
-                                    <!-- ID que vamos a recibir de firebase -->
-                                    <div class="form-group">
-                                        <label>Código</label>
-                                        <input id="codigo" type="text" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Descripción</label>
-                                        <input id="descripcion" type="text" class="form-control" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Cantidad</label>
-                                        <input id="cantidad" type="number" class="form-control" required>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" tabindex="2">Cancelar</button>
-                                    <button type="submit" id="btnGuardar" class="btn btn-primary" translate="1">Guardar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <table id="tablaProductos" class="table table-bordered">
-                    <thead>
-                        <tr class="bg-dark text-light">
-                            <th scope="col">CÓDIGO</th>
-                            <th scope="col">DESCRIPCIÓN</th>
-                            <th scope="col">CANTIDAD</th>
-                            <th scope="col">ACCIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bodyProductos">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.14.4/dist/sweetalert2.all.min.js"></script>
-
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCetjGQE4D1bI6s9_Jx_XAjvvVBrb6Sj0M",
-            authDomain: "proyecto1-8cb8a.firebaseapp.com",
-            databaseURL: "https://proyecto1-8cb8a-default-rtdb.firebaseio.com",
-            projectId: "proyecto1-8cb8a",
-            storageBucket: "proyecto1-8cb8a.appspot.com",
-            messagingSenderId: "126838121015",
-            appId: "1:126838121015:web:ec14f228576ede7c88d5b2"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        window.btnGuardar = function () {
-            const codigo = document.getElementById("codigo").value;
-            const descripcion = document.getElementById("descripcion").value;
-            const cantidad = document.getElementById("cantidad").value;
-
-            console.log(codigo, descripcion,cantidad);
-            
-            push(
-                ref(database, 'producto'),
-                {
-                    codigo: codigo,
-                    descripcion: descripcion,
-                    cantidad: cantidad
-                }
-            );
-
-        }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Código a ejecutar cuando el DOM está completamente cargado
-            const modal = new bootstrap.Modal(document.getElementById('modalAltaEdicion'));
-
-            // Manejador de eventos para mostrar el modal al hacer clic en el botón o el icono
-            document.getElementById('btnNuevo').addEventListener('click', function() {
-                // Limpiar el formulario antes de mostrar el modal
-                document.getElementById('formulario').reset();
-                modal.show();
-            });
-
-            // Puedes agregar un evento similar para el icono si lo deseas
-
-            // Resto de tu código...
-        });
-    </script>
-</body>
-
+            }
+        </script>
+    </body>
 </html>
