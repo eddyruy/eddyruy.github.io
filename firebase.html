@@ -116,6 +116,8 @@
 
             // Cierra el cuadro de diálogo después de guardar
             cerrarDialogo();
+            document.getElementById("nombre-dialog").value = "";
+            document.getElementById("edad-dialog").value = "";
         }
         function mostrarDatosEnTabla(snapshot) {
             tableBody.innerHTML = '';
