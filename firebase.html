@@ -1,19 +1,77 @@
-<html>
-    <head>
+<!doctype html>
+<html lang="en">
 
-    </head>
-    <body>
-        <form id="crud-form">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id = "nombre">
-            <label for="edad">Edad:</label>
-            <input type="number" id = "edad">
-            <button type="button" onclick="crearRegistro()">Crear</button>
-        </form>
+<head>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+        crossorigin="anonymous">
+    <style>
+        .jumbotron {
+            padding: 1rem 1rem;
+            margin-bottom: 0rem;
+            background-color: #e9ecef;
+            border-radius: .3rem;
+        }
+    </style>
+</head>
 
+<body>
 
-        <script type="module">
-            // Import the functions you need from the SDKs you need
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-8">CRUD con FIREBASE</h1>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <form id="crud-form">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre">
+                    <label for="edad">Edad:</label>
+                    <input type="number" id="edad">
+                    <button type="button" onclick="crearRegistro()">Crear</button>
+                </form>
+
+                <!--Modal-->
+                <div id="modalAltaEdicion" class="modal fade" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <!-- ... (rest of your modal code) ... -->
+                </div>
+
+                <table id="tablaProductos" class="table table-bordered">
+                    <thead>
+                        <tr class="bg-dark text-light">
+                            <th scope="col">NOMBRE</th>
+                            <th scope="col">EDAD</th>
+                            <th scope="col">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodyProductos">
+                        <!-- Firebase data will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and other dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"
+        integrity="sha384-qQKpHSKHI9Whcuc5hSC5nAxB8jh6a0cvyVJkwLHKIfUu6iOrxYxKCYN2XeDPVfD"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+    <!-- Firebase JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase.js"></script>
+
+    <script type="module">
+    // Import the functions you need from the SDKs you need
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
             import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
             // TODO: Add SDKs for Firebase products that you want to use
@@ -29,25 +87,30 @@
                 messagingSenderId: "126838121015",
                 appId: "1:126838121015:web:ec14f228576ede7c88d5b2"
             };
-          
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const database = getDatabase(app);
 
-            window.crearRegistro = function () {
-                const nombre = document.getElementById("nombre").value;
-                const edad = document.getElementById("edad").value;
-                console.log(nombre, edad);
-                
-                push(
-                    ref(database, 'septimo'),
-                    {
-                        name: nombre,
-                        age: edad 
-                    }
-                );
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+        const coleccionProductos = db.ref().child('productos');
+        const bodyProductos = document.getElementById('bodyProductos');
 
-            }
-          </script>
-    </body>
+        document.getElementById('crud-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const edad = document.getElementById('edad').value;
+            
+            coleccionProductos.push({
+                name: nombre,
+                age: edad
+            });
+
+            // Clear the form
+            document.getElementById('crud-form').reset();
+        });
+
+        // ... (rest of your Firebase CRUD operations)
+
+    </script>
+</body>
+
 </html>
