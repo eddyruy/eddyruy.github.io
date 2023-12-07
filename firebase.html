@@ -119,6 +119,23 @@
             document.getElementById("nombre-dialog").value = "";
             document.getElementById("edad-dialog").value = "";
         }
+        window.actualizarRegistro = function () {
+            const nombre = document.getElementById("nombre-dialog").value;
+            const edad = document.getElementById("edad-dialog").value;
+            const key = document.getElementById('guardar-btn').getAttribute('data-key');
+
+            if (key) {
+                update(ref(database, `septimo/${key}`), {
+                    name: nombre,
+                    age: edad
+                });
+            }
+
+            cerrarDialogo();
+            document.getElementById("nombre-dialog").value = "";
+            document.getElementById("edad-dialog").value = "";
+            document.getElementById('guardar-btn').removeAttribute('data-key');
+        }
         function mostrarDatosEnTabla(snapshot) {
             tableBody.innerHTML = '';
             snapshot.forEach((childSnapshot) => {
