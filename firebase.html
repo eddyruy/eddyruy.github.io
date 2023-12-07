@@ -106,7 +106,7 @@
             const edad = document.getElementById("edad-dialog").value;
 
             push(
-                ref(database, 'septimo'),
+                ref(database, 'Ushco'),
                 {
                     name: nombre,
                     age: edad
@@ -139,7 +139,7 @@
             const edad = document.getElementById("edad-dialog").value;
 
             // Actualiza los datos en la base de datos
-            update(ref(database, `septimo/${key}`), {
+            update(ref(database, `Ushco/${key}`), {
                 name: nombre,
                 age: edad
             });
@@ -179,10 +179,10 @@
             // Implementa la lógica para eliminar un registro usando la clave (key)
             // Puedes mostrar un mensaje de confirmación antes de eliminar
             if (confirm('¿Estás seguro de que quieres eliminar este registro?')) {
-                remove(ref(database, `septimo/${key}`));
+                remove(ref(database, `Ushco/${key}`));
             }
         }
-        onValue(ref(database, 'septimo'), mostrarDatosEnTabla);
+        onValue(ref(database, 'Ushco'), mostrarDatosEnTabla);
     </script>
 </body>
 </html>
