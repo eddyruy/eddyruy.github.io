@@ -100,7 +100,6 @@
         window.cerrarDialogo = function () {
             document.getElementById('dialog-overlay').style.display = 'none';
         }
-
         // Función para guardar el registro en Firebase
         window.guardarRegistro = function () {
             const nombre = document.getElementById("nombre-dialog").value;
@@ -119,6 +118,46 @@
             document.getElementById("nombre-dialog").value = "";
             document.getElementById("edad-dialog").value = "";
         }
+
+        window.editarRegistro = function (key, nombre, edad) {
+            // Rellena el cuadro de diálogo con los datos del registro a editar
+            document.getElementById("nombre-dialog").value = nombre;
+            document.getElementById("edad-dialog").value = edad;
+
+            // Cambia la función del botón Guardar para que actualice en lugar de agregar
+            const guardarButton = document.querySelector("#dialog-box button:first-of-type");
+            guardarButton.innerHTML = "Actualizar";
+            guardarButton.onclick = function () {
+                actualizarRegistro(key);
+            };
+
+            // Muestra el cuadro de diálogo
+            abrirDialogo();
+        }
+        function actualizarRegistro(key) {
+            const nombre = document.getElementById("nombre-dialog").value;
+            const edad = document.getElementById("edad-dialog").value;
+
+            // Actualiza los datos en la base de datos
+            update(ref(database, `septimo/${key}`), {
+                name: nombre,
+                age: edad
+            });
+
+            // Restaura la función original del botón Guardar
+            const guardarButton = document.querySelector("#dialog-box button:first-of-type");
+            guardarButton.innerHTML = "Guardar";
+            guardarButton.onclick = function () {
+                guardarRegistro();
+            };
+
+            // Cierra el cuadro de diálogo después de actualizar
+            cerrarDialogo();
+            document.getElementById("nombre-dialog").value = "";
+            document.getElementById("edad-dialog").value = "";
+        }
+        
+        
         function mostrarDatosEnTabla(snapshot) {
             tableBody.innerHTML = '';
             snapshot.forEach((childSnapshot) => {
