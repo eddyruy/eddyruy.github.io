@@ -54,10 +54,18 @@
     <!-- Cuadro de diálogo -->
     <div id="dialog-overlay">
         <div id="dialog-box">
+            <label for="cedula-dialog">Cedula:</label>
+            <input type="number" id="cedula-dialog">
             <label for="nombre-dialog">Nombre:</label>
             <input type="text" id="nombre-dialog">
-            <label for="edad-dialog">Edad:</label>
-            <input type="number" id="edad-dialog">
+            <label for="genero-dialog">Genero:</label>
+            <input type="text" id="genero-dialog">
+            <label for="admision-dialog">Año de Admision:</label>
+            <input type="number" id="admision-dialog">
+            <label for="telefono-dialog">Telefono:</label>
+            <input type="number" id="telefono-dialog">
+            <label for="correo-dialog">Correo:</label>
+            <input type="text" id="correo-dialog">
             <button onclick="guardarRegistro()">Guardar</button>
             <button onclick="cerrarDialogo()">Cancelar</button>
         </div>
@@ -65,9 +73,13 @@
     <table id="data-table">
         <thead>
             <tr>
-                <th>Nombre</th>
-                <th>Edad</th>
-                <th>Acciones</th>
+                <th>CEDULA</th>
+                <th>NOMBRE</th>
+                <th>GENERO</th>
+                <th>AÑO DE ADMISION</th>
+                <th>TELEFONO</th>
+                <th>CORREO</th>
+                <th>ACCIONES</th>
             </tr>
         </thead>
         <tbody id="table-body"></tbody>
@@ -102,21 +114,33 @@
         }
         // Función para guardar el registro en Firebase
         window.guardarRegistro = function () {
+            const cedula = document.getElementById("cedula-dialog").value;
             const nombre = document.getElementById("nombre-dialog").value;
-            const edad = document.getElementById("edad-dialog").value;
+            const genero = document.getElementById("genero-dialog").value;
+            const ano = document.getElementById("admision-dialog").value;
+            const telefono = document.getElementById("telefono-dialog").value;
+            const correo = document.getElementById("correo-dialog").value;
 
             push(
                 ref(database, 'Ushco'),
                 {
-                    name: nombre,
-                    age: edad
+                    Cedula: cedula,
+                    Nombre: nombre,
+                    Genero: genero,
+                    Admision: ano,
+                    Telefono: telefono,
+                    Correo: correo
                 }
             );
 
             // Cierra el cuadro de diálogo después de guardar
             cerrarDialogo();
-            document.getElementById("nombre-dialog").value = "";
-            document.getElementById("edad-dialog").value = "";
+            document.getElementById("cedula-dialog").value= "";
+            document.getElementById("nombre-dialog").value= "";
+            document.getElementById("genero-dialog").value= "";
+            document.getElementById("admision-dialog").value= "";
+            document.getElementById("telefono-dialog").value= "";
+            document.getElementById("correo-dialog").value= "";
         }
 
         window.editarRegistro = function (key, nombre, edad) {
