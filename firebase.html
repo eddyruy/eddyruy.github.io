@@ -91,34 +91,43 @@
         const database = getDatabase(app);
         const tableBody = document.getElementById('table-body');
         
-        // Función para abrir el cuadro de diálogo
-        window.abrirDialogo = function () {
-            document.getElementById('dialog-overlay').style.display = 'flex';
+        window.editarRegistro = function (key, nombre, edad) {
+            document.getElementById('nombre-dialog').value = nombre;
+            document.getElementById('edad-dialog').value = edad;
+            document.getElementById('registro-key').value = key;
+            abrirDialogo();
         }
 
-        // Función para cerrar el cuadro de diálogo
-        window.cerrarDialogo = function () {
-            document.getElementById('dialog-overlay').style.display = 'none';
-        }
-
-        // Función para guardar el registro en Firebase
+        // Modificación de la función para guardar el registro en Firebase
         window.guardarRegistro = function () {
             const nombre = document.getElementById("nombre-dialog").value;
             const edad = document.getElementById("edad-dialog").value;
+            const key = document.getElementById("registro-key").value;
 
-            push(
-                ref(database, 'septimo'),
-                {
+            if (key) {
+                // Si hay una clave, es una edición
+                update(ref(database, `septimo/${key}`), {
                     name: nombre,
                     age: edad
-                }
-            );
+                });
+            } else {
+                // Si no hay clave, es un nuevo registro
+                push(
+                    ref(database, 'septimo'),
+                    {
+                        name: nombre,
+                        age: edad
+                    }
+                );
+            }
 
             // Cierra el cuadro de diálogo después de guardar
             cerrarDialogo();
             document.getElementById("nombre-dialog").value = "";
             document.getElementById("edad-dialog").value = "";
+            document.getElementById("registro-key").value = ""; // Limpia la clave
         }
+
         function mostrarDatosEnTabla(snapshot) {
             tableBody.innerHTML = '';
             snapshot.forEach((childSnapshot) => {
